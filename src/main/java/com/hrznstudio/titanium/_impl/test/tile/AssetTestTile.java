@@ -22,6 +22,7 @@ import com.hrznstudio.titanium.component.progress.ProgressBarComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -119,7 +120,7 @@ public class AssetTestTile extends PoweredTile<AssetTestTile>{
 
     @Override
     public int getTitleColor() {
-        return ChatFormatting.RED.getColor();
+        return TextColor.RED.getValue();
     }
 
     @Override

@@ -7,26 +7,30 @@
 
 package com.hrznstudio.titanium.datagenerator.loot.block;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
+import org.jspecify.annotations.NonNull;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class BasicBlockLootTables extends BlockLootSubProvider {
+    protected final LootTableSubProvider.Context output;
     private final Supplier<List<Block>> blocksToProcess;
 
-    public BasicBlockLootTables(Supplier<List<Block>> blocksToProcess, HolderLookup.Provider provider) {
-        super(new HashSet<>(), FeatureFlags.REGISTRY.allFlags(), provider);
+    public BasicBlockLootTables(Supplier<List<Block>> blocksToProcess, LootTableSubProvider.Context output) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), output);
         this.blocksToProcess = blocksToProcess;
+        this.output = output;
     }
 
 
@@ -37,7 +41,7 @@ public class BasicBlockLootTables extends BlockLootSubProvider {
     public LootTable.Builder droppingSelf(ItemLike itemProvider) {
         return LootTable.lootTable()
             .withPool(applyExplosionCondition(itemProvider, LootPool.lootPool()
-                .setRolls(ConstantValue.exactly(1))
+                .setRolls(ContextIntProviders.exactly(1))
                 .add(LootItem.lootTableItem(itemProvider))));
     }
 
@@ -52,7 +56,8 @@ public class BasicBlockLootTables extends BlockLootSubProvider {
     }
 
     @Override
-    protected Iterable<Block> getKnownBlocks() {
+    protected @NonNull Iterable<Block> getKnownBlocks() {
         return blocksToProcess.get();
     }
+
 }

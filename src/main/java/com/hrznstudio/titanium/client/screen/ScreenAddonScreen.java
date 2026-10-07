@@ -18,7 +18,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,14 +83,14 @@ public abstract class ScreenAddonScreen extends Screen implements IScreenAddonCo
     public abstract List<IFactory<IScreenAddon>> guiAddons();
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
+        int pressedButtons = SDLMouse.SDL_GetMouseState(null, null);
+        if ((pressedButtons & SDLMouse.SDL_BUTTON_LMASK) != 0) {//Main Window
             if (!this.isDragging()) {
                 this.setDragging(true);
             } else {
                 for (IScreenAddon iScreenAddon : this.addonList) {
                     if (iScreenAddon.isMouseOver(mouseX, mouseY)) {
-                        iScreenAddon.mouseDragged(mouseX - x, mouseY - y, pressedButton, dragX, dragY);
+                        iScreenAddon.mouseDragged(mouseX - x, mouseY - y, pressedButtons, dragX, dragY);
                     }
                 }
             }

@@ -7,11 +7,11 @@
 
 package com.hrznstudio.titanium.block.tile;
 
-import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextColor;
 
 public interface IScreenInfoProvider {
     default int getTitleColor() {
-        return ChatFormatting.DARK_GRAY.getColor();
+        return TextColor.DARK_GRAY.getValue();
     }
 
     default float getTitleXPos(float titleWidth, float screenWidth, float screenHeight, float guiWidth, float guiHeight) {

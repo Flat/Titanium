@@ -22,7 +22,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -82,10 +81,8 @@ public class TitaniumClient {
 
                 BlockOutlineRenderState state = event.getLevelRenderState().blockOutlineRenderState;
                 int outlineColor = state != null && state.highContrast() ? -11010079 : ARGB.black(102);
-                event.addCustomRenderer((renderState, buffer, stack, translucentPass, levelRenderState) -> {
-                    VertexConsumer builder = buffer.getBuffer(RenderTypes.lines());
-                    ShapeRenderer.renderShape(stack, builder, shape, blockpos.getX() - d0,
-                        blockpos.getY() - d1, blockpos.getZ() - d2, outlineColor, Minecraft.getInstance().gameRenderer.getGameRenderState().windowRenderState.appropriateLineWidth);
+                event.addCustomRenderer((renderState, buffer, stack,  levelRenderState) -> {
+                    buffer.submitShapeOutline(stack, shape, RenderTypes.LINES, outlineColor, Minecraft.getInstance().gameRenderer.gameRenderState().windowRenderState.appropriateLineWidth, false);
                     return true;
                 });
             }

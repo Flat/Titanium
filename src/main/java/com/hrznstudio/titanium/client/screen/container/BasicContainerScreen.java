@@ -16,16 +16,16 @@ import com.hrznstudio.titanium.client.screen.asset.IAssetProvider;
 import com.hrznstudio.titanium.container.BasicAddonContainer;
 import com.hrznstudio.titanium.util.AssetUtil;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
                         return true;
                     }
                     if (widget.isFocused()) {
-                        if (event.scancode() == 18) {
+                        if (event.keycode() == 18) {
                             return true;
                         }
                     }
@@ -130,14 +130,14 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
     }
 
     private void checkForMouseDrag(int mouseX, int mouseY) {
-        int pressedButton = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        if (pressedButton == GLFW.GLFW_PRESS) {//Main Window
+        int pressedButtons = SDLMouse.SDL_GetMouseState(null, null);
+        if ((pressedButtons & SDLMouse.SDL_BUTTON_LMASK) != 0) {
             if (!this.isMouseDragging) {
                 this.isMouseDragging = true;
             } else {
                 for (IScreenAddon iScreenAddon : this.addons) {
                     if (iScreenAddon.isMouseOver(mouseX, mouseY)) {
-                        iScreenAddon.mouseDragged(mouseX - this.xCenter, mouseY - this.yCenter, pressedButton, dragX, dragY);
+                        iScreenAddon.mouseDragged(mouseX - this.xCenter, mouseY - this.yCenter, SDLMouse.SDL_BUTTON_LEFT, dragX, dragY);
                     }
                 }
             }
@@ -198,7 +198,7 @@ public class BasicContainerScreen<T extends AbstractContainerMenu> extends Abstr
         if (container instanceof BasicAddonContainer addonContainer) {
             return addonContainer.getTitleColorFromProvider();
         }
-        return ChatFormatting.DARK_GRAY.getColor();
+        return TextColor.DARK_GRAY.getValue();
     }
 
     public float getTitleX(float xCenter) {
